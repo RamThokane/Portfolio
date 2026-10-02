@@ -1,262 +1,190 @@
-// Theme Toggle Functionality
-const themeToggle = document.getElementById('themeToggle');
-const body = document.body;
+/* Ram Thokane — portfolio scripts */
+(() => {
+  const root = document.documentElement;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
-// Check for saved theme preference or default to dark
-const savedTheme = localStorage.getItem('theme') || 'dark';
-if (savedTheme === 'light') {
-    body.setAttribute('data-theme', 'light');
-}
+  /* ---------- Theme toggle ---------- */
+  const themeBtn = document.getElementById('themeBtn');
+  const isDark = () => {
+    const set = root.getAttribute('data-theme');
+    return set ? set === 'dark' : darkQuery.matches;
+  };
+  const syncThemeBtn = () => {
+    themeBtn.classList.toggle('is-dark', isDark());
+    themeBtn.setAttribute('aria-label', isDark() ? 'Switch to light theme' : 'Switch to dark theme');
+  };
+  themeBtn.addEventListener('click', () => {
+    const next = isDark() ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('theme', next); } catch (e) { /* storage blocked */ }
+    syncThemeBtn();
+    readColors();
+  });
+  darkQuery.addEventListener?.('change', () => { syncThemeBtn(); readColors(); });
+  syncThemeBtn();
 
-themeToggle.addEventListener('click', () => {
-    const currentTheme = body.getAttribute('data-theme');
-    
-    if (currentTheme === 'light') {
-        body.removeAttribute('data-theme');
-        localStorage.setItem('theme', 'dark');
-    } else {
-        body.setAttribute('data-theme', 'light');
-        localStorage.setItem('theme', 'light');
+  /* ---------- Hero dot field ---------- */
+  const canvas = document.getElementById('field');
+  const ctx = canvas.getContext('2d');
+  const hero = canvas.parentElement;
+  let dots = [];
+  let W = 0, H = 0, dpr = 1;
+  let colDot = '#c3c7cf', colAccent = '#2b44ff';
+  const mouse = { x: -9999, y: -9999, active: false };
+  let running = false;
+  let t0 = performance.now();
+
+  function readColors() {
+    const cs = getComputedStyle(root);
+    colDot = cs.getPropertyValue('--dot').trim() || colDot;
+    colAccent = cs.getPropertyValue('--accent').trim() || colAccent;
+    if (reduceMotion) draw(performance.now());
+  }
+
+  function build() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = hero.clientWidth;
+    H = hero.clientHeight;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const gap = W < 600 ? 22 : 28;
+    const cols = Math.ceil(W / gap) + 1;
+    const rows = Math.ceil(H / gap) + 1;
+    const ox = (W - (cols - 1) * gap) / 2;
+    const oy = (H - (rows - 1) * gap) / 2;
+    dots = [];
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        dots.push({ bx: ox + c * gap, by: oy + r * gap, dx: 0, dy: 0, k: 0 });
+      }
     }
-});
+  }
 
-// Navigation Active State
-const sections = document.querySelectorAll('.section');
-const navLinks = document.querySelectorAll('.nav-links a');
-const navbar = document.querySelector('.navbar');
+  function draw(now) {
+    const t = (now - t0) / 1000;
+    ctx.clearRect(0, 0, W, H);
 
-// Navbar scroll effect
-window.addEventListener('scroll', () => {
-    if (window.scrollY > 50) {
-        navbar.classList.add('scrolled');
+    // Where the "attention" is: the cursor, or a slow wandering point when idle
+    let fx, fy, radius, push;
+    if (mouse.active) {
+      fx = mouse.x; fy = mouse.y; radius = 150; push = 26;
     } else {
-        navbar.classList.remove('scrolled');
+      fx = W * (0.62 + 0.25 * Math.sin(t * 0.35));
+      fy = H * (0.5 + 0.3 * Math.sin(t * 0.52 + 1.2));
+      radius = Math.min(W, H) * 0.32; push = 14;
     }
-});
 
-const observerOptions = {
-    root: null,
-    rootMargin: '-50% 0px -50% 0px',
-    threshold: 0
-};
+    for (const d of dots) {
+      const vx = d.bx - fx;
+      const vy = d.by - fy;
+      const dist = Math.hypot(vx, vy);
+      let tx = 0, ty = 0, tk = 0;
+      if (dist < radius) {
+        const f = 1 - dist / radius;
+        const s = f * f * push / (dist || 1);
+        tx = vx * s; ty = vy * s; tk = f;
+      }
+      // ease toward the target so the field feels like it has weight
+      d.dx += (tx - d.dx) * 0.12;
+      d.dy += (ty - d.dy) * 0.12;
+      d.k += (tk - d.k) * 0.12;
 
-const observer = new IntersectionObserver((entries) => {
+      const x = d.bx + d.dx;
+      const y = d.by + d.dy;
+      const r = 1.2 + d.k * 1.9;
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = d.k > 0.08 ? colAccent : colDot;
+      if (d.k > 0.08) ctx.globalAlpha = Math.min(1, 0.25 + d.k * 1.1);
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function loop(now) {
+    if (!running) return;
+    draw(now);
+    requestAnimationFrame(loop);
+  }
+
+  function start() {
+    if (running || reduceMotion) return;
+    running = true;
+    requestAnimationFrame(loop);
+  }
+
+  hero.addEventListener('pointermove', e => {
+    if (e.pointerType !== 'mouse') return;
+    const rect = hero.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+    mouse.active = true;
+  });
+  hero.addEventListener('pointerleave', () => { mouse.active = false; });
+
+  // only animate while the hero is on screen
+  new IntersectionObserver(([entry]) => {
+    if (entry.isIntersecting) start();
+    else running = false;
+  }).observe(hero);
+
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => { build(); if (reduceMotion) draw(performance.now()); }, 150);
+  });
+
+  build();
+  readColors();
+  if (reduceMotion) draw(performance.now());
+
+  /* ---------- Mumbai clock ---------- */
+  const clock = document.getElementById('clock');
+  const fmt = new Intl.DateTimeFormat('en-IN', {
+    timeZone: 'Asia/Kolkata', hour: 'numeric', minute: '2-digit', hour12: true
+  });
+  const tick = () => { clock.textContent = fmt.format(new Date()).toUpperCase(); };
+  tick();
+  setInterval(tick, 15000);
+
+  /* ---------- Nav ---------- */
+  const nav = document.querySelector('.nav');
+  const navLinks = [...document.querySelectorAll('.nav nav a')];
+  const onScroll = () => nav.classList.toggle('is-scrolled', window.scrollY > 30);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  const sectionObserver = new IntersectionObserver(entries => {
     entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const id = entry.target.getAttribute('id');
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === `#${id}`) {
-                    link.classList.add('active');
-                }
-            });
-        }
+      if (!entry.isIntersecting) return;
+      navLinks.forEach(a => a.classList.toggle('is-current', a.getAttribute('href') === `#${entry.target.id}`));
     });
-}, observerOptions);
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  document.querySelectorAll('main section[id]').forEach(s => sectionObserver.observe(s));
 
-sections.forEach(section => {
-    observer.observe(section);
-});
-
-// Smooth scroll for navigation links
-navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const targetId = link.getAttribute('href');
-        const targetSection = document.querySelector(targetId);
-        
-        if (targetSection) {
-            targetSection.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
-    });
-});
-
-// Scroll Animation Observer
-const scrollAnimationObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('animated');
-            
-            // Add special class for main title animation
-            if (entry.target.classList.contains('main-title')) {
-                entry.target.classList.add('animated');
-            }
-        }
-    });
-}, {
-    root: null,
-    rootMargin: '0px 0px -100px 0px',
-    threshold: 0.1
-});
-
-// Observe all elements with animation classes
-const animatedElements = document.querySelectorAll('.animate-on-scroll, .animate-fade-left, .animate-scale');
-animatedElements.forEach(el => {
-    scrollAnimationObserver.observe(el);
-});
-
-// Cursor glow effect (desktop only)
-const cursorGlow = document.getElementById('cursorGlow');
-if (cursorGlow && window.innerWidth > 768) {
-    document.addEventListener('mousemove', (e) => {
-        cursorGlow.style.left = e.clientX + 'px';
-        cursorGlow.style.top = e.clientY + 'px';
-    });
-    
-    document.addEventListener('mouseenter', () => {
-        cursorGlow.style.opacity = '1';
-    });
-    
-    document.addEventListener('mouseleave', () => {
-        cursorGlow.style.opacity = '0';
-    });
-}
-
-// Add hover effect to project cards with tilt
-const projectCards = document.querySelectorAll('.project-card');
-
-projectCards.forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-        if (window.innerWidth > 768) {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            const rotateX = (y - centerY) / 20;
-            const rotateY = (centerX - x) / 20;
-            
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px)`;
-        }
-    });
-    
-    card.addEventListener('mouseleave', () => {
-        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
-    });
-});
-
-// Add hover effect to skill tags with random rotation
-const skillTags = document.querySelectorAll('.skill-tag');
-
-skillTags.forEach(tag => {
-    tag.addEventListener('mouseenter', () => {
-        const rotation = (Math.random() - 0.5) * 6;
-        tag.style.transform = `translateY(-4px) scale(1.02) rotate(${rotation}deg)`;
-    });
-    
-    tag.addEventListener('mouseleave', () => {
-        tag.style.transform = 'translateY(0) scale(1) rotate(0deg)';
-    });
-});
-
-// Parallax effect for avatar (subtle)
-const avatar = document.querySelector('.avatar');
-
-if (window.innerWidth > 768) {
-    window.addEventListener('mousemove', (e) => {
-        const x = (window.innerWidth / 2 - e.pageX) / 50;
-        const y = (window.innerHeight / 2 - e.pageY) / 50;
-        
-        if (avatar) {
-            avatar.style.transform = `translate(${x}px, ${y}px)`;
-        }
-    });
-}
-
-// Typing effect for subtitle (optional)
-const typeWriter = (element, text, speed = 50) => {
-    let i = 0;
-    element.innerHTML = '';
-    
-    const type = () => {
-        if (i < text.length) {
-            element.innerHTML += text.charAt(i);
-            i++;
-            setTimeout(type, speed);
-        }
+  /* ---------- Copy email ---------- */
+  const copyBtn = document.getElementById('copyBtn');
+  const mail = document.getElementById('mail');
+  copyBtn.addEventListener('click', () => {
+    const done = () => {
+      copyBtn.textContent = 'Copied';
+      setTimeout(() => { copyBtn.textContent = 'Copy email'; }, 1800);
     };
-    
-    type();
-};
-
-// Console Easter Egg
-console.log(`
-%c Ram Thokane's Portfolio 
-%c━━━━━━━━━━━━━━━━━━━━━━━━━━
-%c Hey there, fellow developer! 👋
-%c Thanks for checking out my code.
-%c Let's build something cool together!
-%c ━━━━━━━━━━━━━━━━━━━━━━━━━━
-`, 
-'color: #fff; font-size: 16px; font-weight: bold;',
-'color: #666;',
-'color: #888; font-size: 12px;',
-'color: #888; font-size: 12px;',
-'color: #888; font-size: 12px;',
-'color: #666;'
-);
-
-// Add loading animation
-document.addEventListener('DOMContentLoaded', () => {
-    document.body.style.opacity = '0';
-    
-    setTimeout(() => {
-        document.body.style.transition = 'opacity 0.5s ease';
-        document.body.style.opacity = '1';
-        
-        // Trigger initial animations for visible elements
-        setTimeout(() => {
-            const visibleElements = document.querySelectorAll('.about-section .animate-on-scroll');
-            visibleElements.forEach((el, index) => {
-                setTimeout(() => {
-                    el.classList.add('animated');
-                }, index * 150);
-            });
-        }, 300);
-    }, 100);
-});
-
-// Smooth scroll progress indicator (optional enhancement)
-const updateScrollProgress = () => {
-    const scrollTop = window.scrollY;
-    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const scrollPercent = (scrollTop / docHeight) * 100;
-    document.documentElement.style.setProperty('--scroll-progress', scrollPercent + '%');
-};
-
-window.addEventListener('scroll', updateScrollProgress);
-
-// Add magnetic effect to buttons
-const buttons = document.querySelectorAll('.btn');
-
-buttons.forEach(btn => {
-    btn.addEventListener('mousemove', (e) => {
-        if (window.innerWidth > 768) {
-            const rect = btn.getBoundingClientRect();
-            const x = e.clientX - rect.left - rect.width / 2;
-            const y = e.clientY - rect.top - rect.height / 2;
-            
-            btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px) translateY(-3px)`;
-        }
-    });
-    
-    btn.addEventListener('mouseleave', () => {
-        btn.style.transform = 'translate(0, 0)';
-    });
-});
-
-// Social links hover animation
-const socialLinks = document.querySelectorAll('.social-links a');
-
-socialLinks.forEach(link => {
-    link.addEventListener('mouseenter', () => {
-        link.style.transform = 'translateY(-4px) scale(1.1)';
-    });
-    
-    link.addEventListener('mouseleave', () => {
-        link.style.transform = 'translateY(0) scale(1)';
-    });
-});
+    const fallback = () => {
+      const range = document.createRange();
+      range.selectNodeContents(mail);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      copyBtn.textContent = 'Selected, press Ctrl+C';
+    };
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(mail.textContent.trim()).then(done, fallback);
+    } else {
+      fallback();
+    }
+  });
+})();

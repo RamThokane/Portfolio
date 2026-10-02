@@ -1,252 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ram Thokane | Portfolio</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ram Thokane</title>
+  <meta name="description" content="Ram Thokane, computer engineering student in Mumbai who builds full-stack web apps.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    // set theme before paint to avoid a flash
+    try {
+      var t = localStorage.getItem('theme');
+      if (t) document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  </script>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <ul class="nav-links">
-            <li><a href="#about" class="active">about</a></li>
-            <li><a href="#skills">skills</a></li>
-            <li><a href="#builds">builds</a></li>
-            <li><a href="#contact">contact</a></li>
-        </ul>
-        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-            <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-            </svg>
-            <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="5"></circle>
-                <line x1="12" y1="1" x2="12" y2="3"></line>
-                <line x1="12" y1="21" x2="12" y2="23"></line>
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                <line x1="1" y1="12" x2="3" y2="12"></line>
-                <line x1="21" y1="12" x2="23" y2="12"></line>
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-            </svg>
-        </button>
+
+  <header class="nav">
+    <a href="#top" class="nav-name">Ram Thokane</a>
+    <nav aria-label="Sections">
+      <a href="#about">About</a>
+      <a href="#work">Work</a>
+      <a href="#contact">Contact</a>
+      <button class="theme" id="themeBtn" type="button" aria-label="Switch colour theme">
+        <span class="theme-dot" aria-hidden="true"></span>
+      </button>
     </nav>
+  </header>
 
-    <!-- Main Content -->
-    <main class="container">
-        <!-- Cursor Glow Effect -->
-        <div class="cursor-glow" id="cursorGlow"></div>
-        
-        <!-- About Section -->
-        <section id="about" class="section about-section">
-            <div class="avatar animate-on-scroll">
-                <img src="https://avatars.githubusercontent.com/u/146263726?v=4" alt="Ram Thokane Avatar">
-            </div>
-            
-            <h1 class="main-title animate-on-scroll">you have <span class="highlight">found</span> me!</h1>
-            
-            <div class="about-content animate-on-scroll">
-                <h2 class="section-title">about me</h2>
-                <p>hi, im <span class="highlight">ram thokane</span></p>
-                <p>21 years old from <span class="bold">India</span>, engineer.</p>
-                <p>i like to <span class="bold">build things</span>.</p>
-                <p>full stack development and problem solving intrigues me.</p>
-                <p><em>probably <span class="highlight">coding</span> right now.</em></p>
-                <p>movies and computers could be a <span class="bold">good conversation starter</span>.</p>
-                <br>
-                <p>if you want to talk, vibe or build something cool with me hit me up at</p>
-            </div>
+  <main id="top">
 
-            <div class="social-links animate-on-scroll">
-              
-                <a href="https://github.com/RamThokane" target="_blank" aria-label="GitHub">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                    </svg>
-                </a>
-                <a href="mailto:ram.thokane@somaiya.edu" aria-label="Email">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                        <polyline points="22,6 12,13 2,6"></polyline>
-                    </svg>
-                </a>
-                <a href="https://linkedin.com/in/ram-nitin-thokane" target="_blank" aria-label="LinkedIn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-                    </svg>
-                </a>
-            </div>
-        </section>
+    <section class="hero">
+      <canvas class="field" id="field" aria-hidden="true"></canvas>
+      <div class="hero-text">
+        <p class="hero-kicker reveal" style="--d:0">Computer engineering student in Mumbai</p>
+        <h1 class="hero-name" aria-label="Ram Thokane">
+          <span class="word reveal" style="--d:1">Ram</span>
+          <span class="word reveal" style="--d:2">Thokane</span>
+        </h1>
+        <p class="hero-lede reveal" style="--d:3">
+          I build full-stack web apps, from the database to the last
+          hover state. Mostly MERN, lots of Java on the side.
+        </p>
+        <div class="hero-actions reveal" style="--d:4">
+          <a href="#work" class="btn btn-solid">See my work</a>
+          <a href="#contact" class="btn btn-line">Get in touch</a>
+        </div>
+      </div>
+      <p class="hero-clock reveal" style="--d:5">
+        <span class="live" aria-hidden="true"></span>
+        <time id="clock">--:--</time> in Mumbai
+      </p>
+    </section>
 
-        <!-- Skills Section -->
-        <section id="skills" class="section skills-section">
-            <h2 class="section-title animate-on-scroll">skills</h2>
-            <p class="section-subtitle animate-on-scroll">technologies i work with</p>
+    <section class="about" id="about">
+      <h2 class="h2">About</h2>
+      <div class="about-body">
+        <p class="about-lead">
+          I'm Ram, 21. I like building things end to end and I care about
+          the small details people feel but rarely notice.
+        </p>
+        <p>
+          Most of my time goes into full-stack projects and problem solving,
+          with 150+ LeetCode problems done in Java. Away from the keyboard
+          it's usually movies.
+        </p>
+        <dl class="facts">
+          <div><dt>Studying</dt><dd>B.Tech Computer Engineering, K.J. Somaiya College of Engineering, 2023–27</dd></div>
+          <div><dt>Interned at</dt><dd>Suvidha Foundation and InLighnX Global, as a web developer</dd></div>
+          <div><dt>Works with</dt><dd>Java, Python, JavaScript, SQL, React, Node.js, Express, Tailwind CSS, MongoDB, PostgreSQL, Firebase, GCP, Azure, Docker, Git</dd></div>
+        </dl>
+      </div>
+    </section>
 
-            <div class="skills-grid stagger-animate">
-                <div class="skill-tag animate-on-scroll">
-                    <span class="skill-icon">☕</span>
-                    <span>Java</span>
-                </div>
-                <div class="skill-tag animate-on-scroll">
-                    <span class="skill-icon">🐍</span>
-                    <span>Python</span>
-                </div>
-                <div class="skill-tag animate-on-scroll">
-                    <span class="skill-icon js-icon">JS</span>
-                    <span>JavaScript</span>
-                </div>
-                <div class="skill-tag animate-on-scroll">
-                    <span class="skill-icon">⚛️</span>
-                    <span>React</span>
-                </div>
-                <div class="skill-tag animate-on-scroll">
-                    <span class="skill-icon node-icon">⬢</span>
-                    <span>Node.js</span>
-                </div>
-                <div class="skill-tag animate-on-scroll">
-                    <span class="skill-icon">ex</span>
-                    <span>Express</span>
-                </div>
-                <div class="skill-tag animate-on-scroll">
-                    <span class="skill-icon mongo-icon">🍃</span>
-                    <span>MongoDB</span>
-                </div>
-                <div class="skill-tag animate-on-scroll">
-                    <span class="skill-icon psql-icon">🐘</span>
-                    <span>PostgreSQL</span>
-                </div>
-                <div class="skill-tag animate-on-scroll">
-                    <span class="skill-icon">🔥</span>
-                    <span>Firebase</span>
-                </div>
-                <div class="skill-tag animate-on-scroll">
-                    <span class="skill-icon">☁️</span>
-                    <span>GCP</span>
-                </div>
-                <div class="skill-tag animate-on-scroll">
-                    <span class="skill-icon">🐳</span>
-                    <span>Docker</span>
-                </div>
-                <div class="skill-tag animate-on-scroll">
-                    <span class="skill-icon git-icon">⎇</span>
-                    <span>Git</span>
-                </div>
-                <div class="skill-tag animate-on-scroll">
-                    <span class="skill-icon">💨</span>
-                    <span>Tailwind CSS</span>
-                </div>
-                <div class="skill-tag animate-on-scroll">
-                    <span class="skill-icon">🌐</span>
-                    <span>HTML/CSS</span>
-                </div>
-                <div class="skill-tag animate-on-scroll">
-                    <span class="skill-icon">🗄️</span>
-                    <span>SQL</span>
-                </div>
-                <div class="skill-tag animate-on-scroll">
-                    <span class="skill-icon">☁️</span>
-                    <span>Azure</span>
-                </div>
-            </div>
-        </section>
+    <section class="work" id="work">
+      <h2 class="h2">Selected work</h2>
+      <ul class="projects">
+        <li>
+          <a class="project" href="https://github.com/RamThokane/QuickGPT" target="_blank" rel="noopener">
+            <span class="p-name">QuickGPT</span>
+            <span class="p-desc">AI chat and image generation with credit-based billing, Stripe payments and JWT auth.</span>
+            <span class="p-stack">MERN, Gemini API, Stripe</span>
+          </a>
+        </li>
+        <li>
+          <a class="project" href="https://github.com/RamThokane/reelchat" target="_blank" rel="noopener">
+            <span class="p-name">ReelChat</span>
+            <span class="p-desc">Real-time chat with authentication and instant message delivery.</span>
+            <span class="p-stack">JavaScript, real-time, auth</span>
+          </a>
+        </li>
+        <li>
+          <a class="project" href="https://github.com/RamThokane/SolarHand" target="_blank" rel="noopener">
+            <span class="p-name">SolarHand</span>
+            <span class="p-desc">A solar-energy project you control with hand gestures in the browser.</span>
+            <span class="p-stack">JavaScript</span>
+          </a>
+        </li>
+        <li>
+          <a class="project" href="https://github.com/RamThokane/AutomatedX" target="_blank" rel="noopener">
+            <span class="p-name">AutomatedX</span>
+            <span class="p-desc">Python scripts that take repetitive tasks and workflows off my plate.</span>
+            <span class="p-stack">Python</span>
+          </a>
+        </li>
+        <li>
+          <a class="project" href="https://github.com/RamThokane/Leetcode" target="_blank" rel="noopener">
+            <span class="p-name">LeetCode</span>
+            <span class="p-desc">150+ problems solved in Java, written up as I go.</span>
+            <span class="p-stack">Java, DSA</span>
+          </a>
+        </li>
+      </ul>
+    </section>
 
-        <!-- Builds Section -->
-        <section id="builds" class="section builds-section">
-            <h2 class="section-title animate-on-scroll">builds</h2>
-            <p class="section-subtitle animate-on-scroll">things i've built over time</p>
+    <section class="contact" id="contact">
+      <h2 class="contact-h">Have an idea, a role or a question? I'd like to hear it.</h2>
+      <div class="mail-row">
+        <a class="mail" href="mailto:ram.thokane@somaiya.edu" id="mail">ram.thokane@somaiya.edu</a>
+        <button class="copy" id="copyBtn" type="button">Copy email</button>
+      </div>
+      <ul class="elsewhere">
+        <li><a href="https://github.com/RamThokane" target="_blank" rel="noopener">GitHub</a></li>
+        <li><a href="https://linkedin.com/in/ram-nitin-thokane" target="_blank" rel="noopener">LinkedIn</a></li>
+      </ul>
+    </section>
+  </main>
 
-            <div class="projects-grid">
-                <article class="project-card animate-on-scroll">
-                    <div class="project-header">
-                        <h3 class="project-title">QuickGPT</h3>
-                        <a href="https://github.com/RamThokane/QuickGPT" target="_blank" class="project-link">↗</a>
-                    </div>
-                    <p class="project-tech">MERN Stack, Gemini API, Stripe, JWT, TailwindCSS</p>
-                    <p class="project-description">A full-stack AI-driven chat platform enabling users to generate human-like text and AI generated images using Gemini API. Features credit-based billing, secure authentication, and ImageKit.io integration.</p>
-                </article>
+  <footer class="foot">
+    <p>© 2026 Ram Thokane</p>
+    <a href="#top">Back to top</a>
+  </footer>
 
-                <article class="project-card animate-on-scroll">
-                    <div class="project-header">
-                        <h3 class="project-title">ReelChat</h3>
-                        <a href="https://github.com/RamThokane/reelchat" target="_blank" class="project-link">↗</a>
-                    </div>
-                    <p class="project-tech">JavaScript, Real-time, Authentication</p>
-                    <p class="project-description">Real-time chat application with authentication. Build seamless messaging experiences with instant message delivery and secure user sessions.</p>
-                </article>
-
-                <article class="project-card animate-on-scroll">
-                    <div class="project-header">
-                        <h3 class="project-title">SolarHand</h3>
-                        <a href="https://github.com/RamThokane/SolarHand" target="_blank" class="project-link">↗</a>
-                    </div>
-                    <p class="project-tech">JavaScript</p>
-                    <p class="project-description">A project exploring solar energy solutions with interactive hand gesture controls and modern web technologies.</p>
-                </article>
-
-                <article class="project-card animate-on-scroll">
-                    <div class="project-header">
-                        <h3 class="project-title">AutomatedX</h3>
-                        <a href="https://github.com/RamThokane/AutomatedX" target="_blank" class="project-link">↗</a>
-                    </div>
-                    <p class="project-tech">Python, Automation</p>
-                    <p class="project-description">Automation scripts and tools built with Python for streamlining repetitive tasks and workflows.</p>
-                </article>
-
-               
-
-                <article class="project-card animate-on-scroll">
-                    <div class="project-header">
-                        <h3 class="project-title">LeetCode Solutions</h3>
-                        <a href="https://github.com/RamThokane/Leetcode" target="_blank" class="project-link">↗</a>
-                    </div>
-                    <p class="project-tech">Java, DSA, Algorithms</p>
-                    <p class="project-description">A collection of 150+ LeetCode problems solved with optimized algorithms. Documenting my competitive programming journey.</p>
-                </article>
-            </div>
-        </section>
-
-        <!-- Contact CTA Section -->
-        <section id="contact" class="section contact-section">
-            <div class="contact-divider animate-on-scroll">
-                <div class="corner top-left"></div>
-                <div class="corner top-right"></div>
-                <div class="diagonal-pattern"></div>
-            </div>
-            
-            <div class="contact-content animate-scale">
-                <h2 class="contact-title">Let's work together</h2>
-                <p class="contact-subtitle">Have a project in mind? Let's create something amazing.</p>
-                
-                <div class="contact-buttons">
-                    <a href="mailto:ram.thokane@somaiya.edu" class="btn btn-primary">Email Me</a>
-                    <a href="https://linkedin.com/in/ram-nitin-thokane" target="_blank" class="btn btn-secondary">
-                        Connect
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-            
-            <div class="contact-divider bottom">
-                <div class="corner bottom-left"></div>
-                <div class="corner bottom-right"></div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer animate-on-scroll">
-        <p>built with ♥ by ram thokane</p>
-        <p class="footer-sub">© 2026 • all rights reserved</p>
-    </footer>
-
-    <script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
